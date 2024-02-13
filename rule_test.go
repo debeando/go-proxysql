@@ -29,7 +29,7 @@ func TestRuleCRUD(t *testing.T) {
 		Apply:       1,
 		HostgroupID: 11,
 		MatchDigest: `^SELECT.*WHERE.* IN \(.*$`,
-		Username:    "",
+		Username:    "foo",
 	}
 	rule.New(&con)
 
@@ -43,6 +43,11 @@ func TestRuleCRUD(t *testing.T) {
 
 	t.Run("SelectAndIsNotEmpty", func(t *testing.T) {
 		assert.Nil(t, rule.Select())
+		assert.Equal(t, rule.Apply, 1)
+		assert.Equal(t, rule.Active, 1)
+		assert.Equal(t, rule.HostgroupID, 11)
+		assert.Equal(t, rule.MatchDigest, `^SELECT.*WHERE.* IN \(.*$`)
+		assert.Equal(t, rule.Username, "foo")
 	})
 
 	t.Run("Update", func(t *testing.T) {
@@ -58,7 +63,7 @@ func TestRuleCRUD(t *testing.T) {
 			Apply:       1,
 			HostgroupID: 11,
 			MatchDigest: `^SELECT.*WHERE.* IN \(.*$`,
-			Username:    "",
+			Username:    "foo",
 		}
 		rule.New(&con)
 
@@ -67,6 +72,7 @@ func TestRuleCRUD(t *testing.T) {
 		assert.Equal(t, rule.Apply, 0)
 		assert.Equal(t, rule.HostgroupID, 11)
 		assert.Equal(t, rule.MatchDigest, `^SELECT.*WHERE.* IN \(.*$`)
+		assert.Equal(t, rule.Username, "foo")
 	})
 
 	t.Run("Delete", func(t *testing.T) {
