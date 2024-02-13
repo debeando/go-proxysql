@@ -7,10 +7,10 @@ import (
 
 type Rule struct {
 	connection  *Connection
+	ID          int    `yaml:"rule_id"`
 	Active      int    `yaml:"active"`
 	Apply       int    `yaml:"apply"`
 	HostgroupID int    `yaml:"destination_hostgroup"`
-	ID          int    `yaml:"rule_id"`
 	MatchDigest string `yaml:"match_digest"`
 	Username    string `yaml:"username"`
 }
@@ -33,8 +33,9 @@ func (r *Rule) Select() error {
 		&r.Active,
 		&r.Apply,
 		&r.HostgroupID,
+		&r.Username,
 		&r.MatchDigest,
-		&r.Username)
+	)
 }
 
 func (r *Rule) Insert() error {
@@ -66,7 +67,7 @@ func (r *Rule) Delete() error {
 
 func (r *Rule) QuerySelect() string {
 	return fmt.Sprintf(
-		"SELECT rule_id, active, apply, destination_hostgroup, match_digest, username FROM mysql_query_rules WHERE rule_id = %d;",
+		"SELECT rule_id, active, apply, destination_hostgroup, username, match_digest FROM mysql_query_rules WHERE rule_id = %d;",
 		r.ID,
 	)
 }
