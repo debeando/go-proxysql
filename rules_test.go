@@ -103,3 +103,38 @@ func TestRulesEnable(t *testing.T) {
 	assert.Equal(t, rules.Get(proxysql.Rule{ID: 102}).Active, 1)
 	assert.Equal(t, rules.Get(proxysql.Rule{ID: 103}).Active, 1)
 }
+
+func TestRulesLoad(t *testing.T) {
+	con := proxysql.Connection{
+		Host:     "127.0.0.1",
+		Port:     6032,
+		Username: "radmin",
+		Password: "radmin",
+	}
+	con.Connect()
+
+	assert.Nil(t, con.Connect())
+
+	rules := proxysql.Rules{}
+	rules.New(&con)
+	rules.Add(proxysql.Rule{
+		ID:          100,
+		Active:      1,
+		Apply:       1,
+		HostgroupID: 11,
+		MatchDigest: `^SELECT.*WHERE.* IN \(.*$`,
+		Username:    "foo",
+	})
+	rules.Save()
+	rules.Reset()
+	rules.Load()
+
+	rule := rules.Get(proxysql.Rule{ID: 100})
+
+	assert.Equal(t, rule.Active, 1)
+	assert.Equal(t, rule.Apply, 1)
+	assert.Equal(t, rule.HostgroupID, 11)
+	assert.Equal(t, rule.MatchDigest, `^SELECT.*WHERE.* IN \(.*$`)
+	assert.Equal(t, rule.Username, "foo")
+	assert.NoError(t, rule.Delete())
+}
