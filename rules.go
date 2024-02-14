@@ -75,8 +75,12 @@ func (r *Rules) Load() error {
 }
 
 func (r *Rules) Save() {
-	for index, _ := range *r.items {
-		(*r.items)[index].Update()
+	for _, rule := range *r.items {
+		if err := rule.Select(); err != nil {
+			rule.Insert()
+		} else {
+			rule.Update()
+		}
 	}
 }
 
@@ -89,5 +93,5 @@ func (r *Rules) SaveToDisk() {
 }
 
 func (r *Rules) QuerySelect() string {
-	return "SELECT rule_id, active, apply, destination_hostgroup, match_digest, username FROM mysql_query_rules;"
+	return "SELECT rule_id, active, apply, destination_hostgroup, username, match_digest FROM mysql_query_rules;"
 }
