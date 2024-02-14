@@ -125,7 +125,7 @@ func TestRulesLoad(t *testing.T) {
 		MatchDigest: `^SELECT.*WHERE.* IN \(.*$`,
 		Username:    "foo",
 	})
-	rules.Save()
+	rules.Insert()
 	rules.Reset()
 	rules.Load()
 

@@ -74,13 +74,15 @@ func (r *Rules) Load() error {
 	return nil
 }
 
-func (r *Rules) Save() {
-	for _, rule := range *r.items {
-		if err := rule.Select(); err != nil {
-			rule.Insert()
-		} else {
-			rule.Update()
-		}
+func (r *Rules) Insert() {
+	for index, _ := range *r.items {
+		(*r.items)[index].Insert()
+	}
+}
+
+func (r *Rules) Update() {
+	for index, _ := range *r.items {
+		(*r.items)[index].Update()
 	}
 }
 
